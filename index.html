@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Irrigation Monitoring System</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <header class="top-nav">
+        <div class="header-content">
+            <div class="logo-area">
+                <img src="image/logo.png" alt="Smart Irrigation Logo" class="nav-logo">
+                <h1>Acu<span>Root</span></h1>
+            </div>
+            <nav class="nav-menu">
+                <a href="index.html" class="nav-link active">Dashboard</a>
+                <a href="team.html" class="nav-link">Team</a>
+            </nav>
+            <div class="system-status">
+                <div class="status-indicator"></div>
+                <span id="connection-status">System Connected</span>
+            </div>
+        </div>
+    </header>
+
+    <main class="dashboard-container">
+        <!-- Dashboard Overview Cards -->
+        <section class="cards-grid">
+            <div class="card metric-card">
+                <div class="card-header">
+                    <h3>Soil Moisture Level</h3>
+                    <svg class="card-icon blue-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M12 2v20" />
+                        <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
+                    </svg>
+                </div>
+                <div class="card-value">
+                    <span id="moisture-value">--</span><span class="unit">%</span>
+                </div>
+                <div class="card-footer">
+                    <div class="progress-bar-container">
+                        <div class="progress-bar" id="moisture-progress" style="width: 0%;"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card metric-card">
+                <div class="card-header">
+                    <h3>Motor Status</h3>
+                    <svg class="card-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="10" />
+                        <path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20" />
+                        <path d="M2 12h20" />
+                    </svg>
+                </div>
+                <div class="card-value status-value">
+                    <span id="motor-status-text" class="status-off">OFF</span>
+                </div>
+                <div class="card-footer text-muted">
+                    Pump state indicator
+                </div>
+            </div>
+
+            <div class="card metric-card">
+                <div class="card-header">
+                    <h3>Watering Status</h3>
+                    <svg class="card-icon blue-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z" />
+                    </svg>
+                </div>
+                <div class="card-value status-value">
+                    <span id="watering-status-text" class="status-inactive">Inactive</span>
+                </div>
+                <div class="card-footer text-muted">
+                    Irrigation activity
+                </div>
+            </div>
+        </section>
+
+        <!-- Chart and Controls Section -->
+        <div class="main-content-grid">
+            <section class="card chart-section">
+                <div class="card-header">
+                    <h2>Real-time Soil Moisture vs Time</h2>
+                    <span class="last-updated">Last update: <span id="timestamp">--:--:--</span></span>
+                </div>
+                <div class="chart-container">
+                    <canvas id="moistureChart"></canvas>
+                </div>
+            </section>
+
+            <section class="card controls-section">
+                <div class="card-header">
+                    <h2>Manual Controls</h2>
+                </div>
+                <p class="controls-desc">Override automated schedule manually below.</p>
+                <div class="button-group">
+                    <button id="btn-start" class="btn btn-primary">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <polygon points="5 3 19 12 5 21 5 3" />
+                        </svg>
+                        START IRRIGATION
+                    </button>
+                    <button id="btn-stop" class="btn btn-danger" disabled>
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
+                        </svg>
+                        STOP IRRIGATION
+                    </button>
+                </div>
+                <div class="control-feedback" id="control-feedback">
+                    System ready.
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <footer class="main-footer">
+        <div class="footer-creator">Created by <a href="https://my-portfolio-yjfu.vercel.app/" target="_blank"><span class="creator-blinker"></span>Yash Sunder Bawari</a></div>
+        <p style="margin-top: 0.5rem; color: var(--text-muted); font-size: 0.8rem;">
+            &copy; 2026 Smart Irrigation Monitoring System. Crafted for a greener planet.
+        </p>
+    </footer>
+
+    <!-- Custom Logic -->
+    <script type="module" src="script.js"></script>
+</body>
+
+</html>

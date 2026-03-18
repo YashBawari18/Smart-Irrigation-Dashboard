@@ -398,7 +398,7 @@ body {
     }
     
     .logo-area span {
-        display: none;
+        display: inline; /* Ensure "Root" is visible */
     }
 
     .cards-grid {
@@ -407,6 +407,114 @@ body {
     
     .dashboard-container {
         padding: 0 1rem;
+    }
+}
+
+/* Mobile Navigation Styles */
+.hamburger-menu {
+    display: none;
+    flex-direction: column;
+    justify-content: space-around;
+    width: 30px;
+    height: 25px;
+    cursor: pointer;
+    z-index: 1001;
+}
+
+.hamburger-menu .bar {
+    width: 100%;
+    height: 3px;
+    background-color: var(--primary-color);
+    border-radius: 10px;
+    transition: all 0.3s ease;
+}
+
+@media (max-width: 768px) {
+    .hamburger-menu {
+        display: flex;
+    }
+
+    .nav-menu {
+        position: fixed;
+        top: 0;
+        right: -100%;
+        width: 70%;
+        height: 100vh;
+        background-color: var(--card-bg);
+        flex-direction: column;
+        justify-content: center;
+        gap: 3rem;
+        box-shadow: -10px 0 30px rgba(0,0,0,0.1);
+        transition: right 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+        z-index: 1000;
+        padding: 2rem;
+    }
+
+    .nav-menu.active {
+        right: 0;
+    }
+
+    .nav-link {
+        font-size: 1.5rem;
+    }
+
+    .hamburger-menu.active .bar:nth-child(1) {
+        transform: translateY(8px) rotate(45deg);
+    }
+
+    .hamburger-menu.active .bar:nth-child(2) {
+        opacity: 0;
+    }
+
+    .hamburger-menu.active .bar:nth-child(3) {
+        transform: translateY(-8px) rotate(-45deg);
+    }
+
+    body.nav-open {
+        overflow: hidden;
+    }
+
+    .system-status {
+        padding: 4px 10px;
+        font-size: 0.8rem;
+    }
+    
+    .system-status span {
+        display: none;
+    }
+}
+
+/* Specific Page Responsiveness */
+@media (max-width: 480px) {
+    .logo-area h1 {
+        font-size: 1.1rem;
+    }
+
+    .card-value {
+        font-size: 2rem;
+    }
+
+    .section-title {
+        font-size: 2.2rem;
+        letter-spacing: -1px;
+    }
+
+    .section-subtitle {
+        font-size: 1.1rem;
+        margin-bottom: 3rem;
+    }
+
+    .team-grid {
+        gap: 2rem;
+    }
+
+    .team-card {
+        padding: 2.5rem 1.5rem;
+    }
+
+    .member-img-wrapper {
+        width: 180px;
+        height: 180px;
     }
 }
 /* Light Theme Crazy Team Section Styles */

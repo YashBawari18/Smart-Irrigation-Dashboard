@@ -20,16 +20,16 @@ const db = getDatabase(app);
 // -------- Plant Threshold Data --------
 // threshold = auto-pump triggers when moisture drops below this %
 const plantThresholds = {
-    "tomato":     { threshold: 60, range: "60–80%",  display: "Tomato"     },
-    "cactus":     { threshold: 10, range: "10–20%",  display: "Cactus"     },
-    "rose":       { threshold: 50, range: "50–70%",  display: "Rose"       },
-    "fern":       { threshold: 70, range: "70–90%",  display: "Fern"       },
-    "wheat":      { threshold: 40, range: "40–60%",  display: "Wheat"      },
-    "lettuce":    { threshold: 65, range: "65–80%",  display: "Lettuce"    },
-    "mint":       { threshold: 55, range: "55–75%",  display: "Mint"       },
-    "aloe vera":  { threshold: 15, range: "15–30%",  display: "Aloe Vera"  },
-    "orchid":     { threshold: 45, range: "45–65%",  display: "Orchid"     },
-    "sunflower":  { threshold: 35, range: "35–55%",  display: "Sunflower"  }
+    "tomato":     { threshold: 60, stopAt: 80, range: "60–80%",  display: "Tomato"     },
+    "cactus":     { threshold: 10, stopAt: 20, range: "10–20%",  display: "Cactus"     },
+    "rose":       { threshold: 50, stopAt: 70, range: "50–70%",  display: "Rose"       },
+    "fern":       { threshold: 70, stopAt: 90, range: "70–90%",  display: "Fern"       },
+    "wheat":      { threshold: 40, stopAt: 60, range: "40–60%",  display: "Wheat"      },
+    "lettuce":    { threshold: 65, stopAt: 80, range: "65–80%",  display: "Lettuce"    },
+    "mint":       { threshold: 55, stopAt: 75, range: "55–75%",  display: "Mint"       },
+    "aloe vera":  { threshold: 15, stopAt: 30, range: "15–30%",  display: "Aloe Vera"  },
+    "orchid":     { threshold: 45, stopAt: 65, range: "45–65%",  display: "Orchid"     },
+    "sunflower":  { threshold: 35, stopAt: 55, range: "35–55%",  display: "Sunflower"  }
 };
 
 
@@ -143,12 +143,13 @@ function setupPlantControls() {
             return;
         }
 
-        // Write threshold and plant name to Firebase
+        // Write thresholds and plant name to Firebase
         set(ref(db, "irrigation/threshold"), plant.threshold);
+        set(ref(db, "irrigation/stopThreshold"), plant.stopAt);
         set(ref(db, "irrigation/plant"), plant.display);
 
         showPlantInfo(plant);
-        showPlantFeedback(`✅ ${plant.display} profile applied! Threshold set to ${plant.threshold}%.`, "success");
+        showPlantFeedback(`✅ ${plant.display} profile applied! Auto-pump: ${plant.threshold}% to ${plant.stopAt}%.`, "success");
     });
 
     // Allow pressing Enter in the input

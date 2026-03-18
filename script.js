@@ -65,6 +65,7 @@ const btnChangePlant      = document.getElementById('btn-change-plant');
 // Dashboard Info Display
 const plantNameDisplay    = document.getElementById('plant-name-display');
 const plantRangeDisplay   = document.getElementById('plant-range-display');
+const plantImgDisplay     = document.getElementById('plant-img-display');
 
 
 // -------- Initialization --------
@@ -169,8 +170,13 @@ function listenToFirebase() {
                 plantNameDisplay.textContent = plant.display;
                 plantRangeDisplay.textContent = plant.range;
                 
-                // Note: We no longer auto-jump to dashboard on load.
-                // The selection screen stays visible until the user clicks Enter.
+                // Update Image in dashboard profile
+                if (plantImgDisplay) {
+                    const imgName = key.replace(" ", "");
+                    // Check if it's one of the 6 we generated
+                    const hasReadyImg = ["tomato", "cactus", "rose", "fern", "wheat", "lettuce"].includes(key);
+                    plantImgDisplay.src = hasReadyImg ? `image/plants/${imgName}.png` : `image/logo.png`;
+                }
             }
         }
     });

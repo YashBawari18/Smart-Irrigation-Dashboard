@@ -953,11 +953,42 @@ body {
     background: #f1f8f1;
     border-radius: 16px;
     border: 1px solid rgba(46, 125, 50, 0.1);
+    display: flex;
+    align-items: center;
+    gap: 1.2rem;
+}
+
+.dashboard-plant-image {
+    width: 70px;
+    height: 70px;
+    border-radius: 12px;
+    overflow: hidden;
+    flex-shrink: 0;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+.dashboard-plant-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.plant-info-content {
+    flex-grow: 1;
+}
+
+.plant-info-content h3 {
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--text-muted);
+    margin-bottom: 0.4rem;
 }
 
 .dashboard-plant-profile .plant-info {
     background: white;
-    margin-top: 0.8rem;
+    margin-top: 0;
+    padding: 0.6rem 0.8rem;
 }
 
 /* Responsive adjustments */

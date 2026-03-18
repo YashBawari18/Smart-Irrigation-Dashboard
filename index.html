@@ -126,6 +126,58 @@
                 <div class="control-feedback" id="control-feedback">
                     System ready.
                 </div>
+
+                <!-- Plant Profile Section -->
+                <div class="plant-profile-section">
+                    <div class="plant-profile-header">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="plant-icon">
+                            <path d="M12 22V12" />
+                            <path d="M5 12C5 7 8 4 12 4s7 3 7 8" />
+                            <path d="M12 12C12 7 9 4 5 4" />
+                        </svg>
+                        <h3>Plant Profile</h3>
+                    </div>
+                    <p class="plant-desc">Set your plant to auto-adjust moisture threshold.</p>
+                    <div class="plant-input-row">
+                        <input
+                            type="text"
+                            id="plant-input"
+                            list="plant-list"
+                            placeholder="e.g. Tomato, Rose, Cactus"
+                            class="plant-input"
+                            autocomplete="off"
+                        />
+                        <datalist id="plant-list">
+                            <option value="Tomato">
+                            <option value="Cactus">
+                            <option value="Rose">
+                            <option value="Fern">
+                            <option value="Wheat">
+                            <option value="Lettuce">
+                            <option value="Mint">
+                            <option value="Aloe Vera">
+                            <option value="Orchid">
+                            <option value="Sunflower">
+                        </datalist>
+                        <button id="btn-set-plant" class="btn btn-plant">Set</button>
+                    </div>
+                    <div class="plant-info" id="plant-info" style="display:none;">
+                        <div class="plant-info-row">
+                            <span class="plant-info-label">🌿 Plant</span>
+                            <span class="plant-info-value" id="plant-name-display">--</span>
+                        </div>
+                        <div class="plant-info-row">
+                            <span class="plant-info-label">💧 Threshold</span>
+                            <span class="plant-info-value" id="plant-threshold-display">--%</span>
+                        </div>
+                        <div class="plant-info-row">
+                            <span class="plant-info-label">📊 Ideal Range</span>
+                            <span class="plant-info-value" id="plant-range-display">--</span>
+                        </div>
+                    </div>
+                    <div class="plant-feedback" id="plant-feedback"></div>
+                </div>
             </section>
         </div>
     </main>

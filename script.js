@@ -36,9 +36,10 @@ const plantThresholds = {
 // -------- System State --------
 let isMotorOn = false;
 let currentMoisture = 0;
-let currentThreshold = 30; // default, will update from Firebase
+let currentThreshold = 30; 
 let chartInstance = null;
 const maxDataPoints = 15;
+let selectedPlantKey = null; // Track selection in overlay
 
 
 // -------- DOM Elements --------
@@ -54,28 +55,85 @@ const btnStart       = document.getElementById('btn-start');
 const btnStop        = document.getElementById('btn-stop');
 const controlFeedback = document.getElementById('control-feedback');
 
-// Plant Profile Elements
-const plantInput          = document.getElementById('plant-input');
-const btnSetPlant         = document.getElementById('btn-set-plant');
-const plantInfo           = document.getElementById('plant-info');
+// Selection View Elements
+const selectionView       = document.getElementById('selection-view');
+const dashboardView       = document.getElementById('dashboard-view');
+const plantCards          = document.querySelectorAll('.plant-card');
+const btnEnterDashboard   = document.getElementById('btn-enter-dashboard');
+const btnChangePlant      = document.getElementById('btn-change-plant');
+
+// Dashboard Info Display
 const plantNameDisplay    = document.getElementById('plant-name-display');
-const plantThreshDisplay  = document.getElementById('plant-threshold-display');
 const plantRangeDisplay   = document.getElementById('plant-range-display');
-const plantFeedback       = document.getElementById('plant-feedback');
 
 
 // -------- Initialization --------
 document.addEventListener('DOMContentLoaded', () => {
     initChart();
     updateTimestamp();
+    setupViewLogic();
     listenToFirebase();
-    setupPlantControls();
 });
+
+
+// -------- View & Selection Logic --------
+function setupViewLogic() {
+    // 1. Plant Card Selection
+    plantCards.forEach(card => {
+        card.addEventListener('click', () => {
+            // Remove active from others
+            plantCards.forEach(c => c.classList.remove('active'));
+            // Set active
+            card.classList.add('active');
+            selectedPlantKey = card.dataset.plant;
+            btnEnterDashboard.disabled = false;
+        });
+    });
+
+    // 2. Enter Dashboard Button
+    btnEnterDashboard.addEventListener('click', () => {
+        if (!selectedPlantKey) return;
+        
+        const plant = plantThresholds[selectedPlantKey];
+        if (plant) {
+            // Write to Firebase
+            set(ref(db, "irrigation/threshold"), plant.threshold);
+            set(ref(db, "irrigation/stopThreshold"), plant.stopAt);
+            set(ref(db, "irrigation/plant"), plant.display);
+            
+            // UI Transition
+            showDashboard();
+        }
+    });
+
+    // 3. Change Plant Button (Dashboard Nav)
+    btnChangePlant.addEventListener('click', () => {
+        showSelection();
+    });
+}
+
+function showDashboard() {
+    selectionView.classList.add('hidden');
+    setTimeout(() => {
+        selectionView.style.display = 'none';
+        dashboardView.style.display = 'block';
+        btnChangePlant.style.display = 'block';
+        // Trigger resize for chart
+        if (chartInstance) chartInstance.resize();
+    }, 500);
+}
+
+function showSelection() {
+    selectionView.style.display = 'flex';
+    setTimeout(() => {
+        selectionView.classList.remove('hidden');
+    }, 10);
+}
 
 
 // -------- Listen to Firebase --------
 function listenToFirebase() {
-
+    // Data Listeners
     const moistureRef = ref(db, "irrigation/moisture");
     onValue(moistureRef, (snapshot) => {
         currentMoisture = Number(snapshot.val()) || 0;
@@ -91,7 +149,6 @@ function listenToFirebase() {
         updateUI();
     });
 
-    // Listen to threshold from Firebase (updated by plant selector)
     const thresholdRef = ref(db, "irrigation/threshold");
     onValue(thresholdRef, (snapshot) => {
         const val = snapshot.val();
@@ -101,17 +158,24 @@ function listenToFirebase() {
         updateUI();
     });
 
-    // Restore plant info if previously saved in Firebase
+    // PERSISTENCE: Check if a plant is already active in Firebase
     const plantRef = ref(db, "irrigation/plant");
     onValue(plantRef, (snapshot) => {
         const savedPlant = snapshot.val();
         if (savedPlant) {
             const key = savedPlant.toLowerCase();
             if (plantThresholds[key]) {
-                showPlantInfo(plantThresholds[key]);
+                const plant = plantThresholds[key];
+                plantNameDisplay.textContent = plant.display;
+                plantRangeDisplay.textContent = plant.range;
+                
+                // If we are currently on the selection screen, jump to dashboard
+                if (selectionView.style.display !== 'none' && !selectionView.classList.contains('hidden')) {
+                    showDashboard();
+                }
             }
         }
-    });
+    }, { onlyOnce: true }); // Only skip once on load
 }
 
 
@@ -123,57 +187,6 @@ btnStart.addEventListener('click', () => {
 btnStop.addEventListener('click', () => {
     set(ref(db, "irrigation/motor"), "Off");
 });
-
-
-// -------- Plant Profile Controls --------
-function setupPlantControls() {
-    btnSetPlant.addEventListener('click', () => {
-        const entered = plantInput.value.trim();
-        if (!entered) {
-            showPlantFeedback("Please enter a plant name.", "error");
-            return;
-        }
-
-        const key = entered.toLowerCase();
-        const plant = plantThresholds[key];
-
-        if (!plant) {
-            showPlantFeedback(`"${entered}" not found. Try: Tomato, Rose, Cactus, Fern…`, "error");
-            plantInfo.style.display = "none";
-            return;
-        }
-
-        // Write thresholds and plant name to Firebase
-        set(ref(db, "irrigation/threshold"), plant.threshold);
-        set(ref(db, "irrigation/stopThreshold"), plant.stopAt);
-        set(ref(db, "irrigation/plant"), plant.display);
-
-        showPlantInfo(plant);
-        showPlantFeedback(`✅ ${plant.display} profile applied! Auto-pump: ${plant.threshold}% to ${plant.stopAt}%.`, "success");
-    });
-
-    // Allow pressing Enter in the input
-    plantInput.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter') btnSetPlant.click();
-    });
-}
-
-function showPlantInfo(plant) {
-    plantNameDisplay.textContent   = plant.display;
-    plantThreshDisplay.textContent = plant.threshold + "%";
-    plantRangeDisplay.textContent  = plant.range;
-    plantInfo.style.display        = "block";
-}
-
-function showPlantFeedback(msg, type) {
-    plantFeedback.textContent  = msg;
-    plantFeedback.className    = `plant-feedback plant-feedback-${type}`;
-    // Clear after 4 seconds
-    setTimeout(() => {
-        plantFeedback.textContent = "";
-        plantFeedback.className   = "plant-feedback";
-    }, 4000);
-}
 
 
 // -------- UI Updates --------

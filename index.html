@@ -17,7 +17,7 @@
 
 <body>
     <header class="top-nav">
-        <div class="header-content">
+            <div class="header-content">
             <div class="logo-area">
                 <img src="image/logo.png" alt="Smart Irrigation Logo" class="nav-logo">
                 <h1>Acu<span>Root</span></h1>
@@ -25,6 +25,7 @@
             <nav class="nav-menu">
                 <a href="index.html" class="nav-link active">Dashboard</a>
                 <a href="team.html" class="nav-link">Team</a>
+                <button id="btn-change-plant" class="nav-btn-link" style="display:none;">Change Plant</button>
             </nav>
             <div class="system-status">
                 <div class="status-indicator"></div>
@@ -33,154 +34,209 @@
         </div>
     </header>
 
-    <main class="dashboard-container">
-        <!-- Dashboard Overview Cards -->
-        <section class="cards-grid">
-            <div class="card metric-card">
-                <div class="card-header">
-                    <h3>Soil Moisture Level</h3>
-                    <svg class="card-icon blue-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
-                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M12 2v20" />
-                        <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
-                    </svg>
-                </div>
-                <div class="card-value">
-                    <span id="moisture-value">--</span><span class="unit">%</span>
-                </div>
-                <div class="card-footer">
-                    <div class="progress-bar-container">
-                        <div class="progress-bar" id="moisture-progress" style="width: 0%;"></div>
+    <!-- Plant Selection View (Initially Visible) -->
+    <section id="selection-view" class="selection-overlay">
+        <div class="selection-container">
+            <div class="selection-header">
+                <h2>Welcome to AcuRoot</h2>
+                <p>Select your plant to optimize irrigation</p>
+            </div>
+            
+            <div class="plant-grid" id="plant-selection-grid">
+                <!-- Plants will be injected here via JS for better management, 
+                     but we'll define the structure -->
+                <div class="plant-card" data-plant="tomato">
+                    <div class="plant-card-img">
+                        <img src="image/plants/tomato.png" alt="Tomato">
                     </div>
+                    <span>Tomato</span>
+                </div>
+                <div class="plant-card" data-plant="cactus">
+                    <div class="plant-card-img">
+                        <img src="image/plants/cactus.png" alt="Cactus">
+                    </div>
+                    <span>Cactus</span>
+                </div>
+                <div class="plant-card" data-plant="rose">
+                    <div class="plant-card-img">
+                        <img src="image/plants/rose.png" alt="Rose">
+                    </div>
+                    <span>Rose</span>
+                </div>
+                <div class="plant-card" data-plant="fern">
+                    <div class="plant-card-img">
+                        <img src="image/plants/fern.png" alt="Fern">
+                    </div>
+                    <span>Fern</span>
+                </div>
+                <div class="plant-card" data-plant="wheat">
+                    <div class="plant-card-img">
+                        <img src="image/plants/wheat.png" alt="Wheat">
+                    </div>
+                    <span>Wheat</span>
+                </div>
+                <div class="plant-card" data-plant="lettuce">
+                    <div class="plant-card-img">
+                        <img src="image/plants/lettuce.png" alt="Lettuce">
+                    </div>
+                    <span>Lettuce</span>
+                </div>
+                <div class="plant-card" data-plant="mint">
+                    <div class="plant-card-img">
+                        <img src="image/logo.png" alt="Mint" class="placeholder-img">
+                    </div>
+                    <span>Mint</span>
+                </div>
+                <div class="plant-card" data-plant="aloe vera">
+                    <div class="plant-card-img">
+                        <img src="image/logo.png" alt="Aloe Vera" class="placeholder-img">
+                    </div>
+                    <span>Aloe Vera</span>
+                </div>
+                <div class="plant-card" data-plant="orchid">
+                    <div class="plant-card-img">
+                        <img src="image/logo.png" alt="Orchid" class="placeholder-img">
+                    </div>
+                    <span>Orchid</span>
+                </div>
+                <div class="plant-card" data-plant="sunflower">
+                    <div class="plant-card-img">
+                        <img src="image/logo.png" alt="Sunflower" class="placeholder-img">
+                    </div>
+                    <span>Sunflower</span>
                 </div>
             </div>
 
-            <div class="card metric-card">
-                <div class="card-header">
-                    <h3>Motor Status</h3>
-                    <svg class="card-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
-                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <circle cx="12" cy="12" r="10" />
-                        <path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20" />
-                        <path d="M2 12h20" />
-                    </svg>
-                </div>
-                <div class="card-value status-value">
-                    <span id="motor-status-text" class="status-off">OFF</span>
-                </div>
-                <div class="card-footer text-muted">
-                    Pump state indicator
-                </div>
+            <div class="selection-footer">
+                <button id="btn-enter-dashboard" class="btn btn-primary btn-large" disabled>
+                    Enter Dashboard
+                </button>
             </div>
-
-            <div class="card metric-card">
-                <div class="card-header">
-                    <h3>Watering Status</h3>
-                    <svg class="card-icon blue-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
-                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z" />
-                    </svg>
-                </div>
-                <div class="card-value status-value">
-                    <span id="watering-status-text" class="status-inactive">Inactive</span>
-                </div>
-                <div class="card-footer text-muted">
-                    Irrigation activity
-                </div>
-            </div>
-        </section>
-
-        <!-- Chart and Controls Section -->
-        <div class="main-content-grid">
-            <section class="card chart-section">
-                <div class="card-header">
-                    <h2>Real-time Soil Moisture vs Time</h2>
-                    <span class="last-updated">Last update: <span id="timestamp">--:--:--</span></span>
-                </div>
-                <div class="chart-container">
-                    <canvas id="moistureChart"></canvas>
-                </div>
-            </section>
-
-            <section class="card controls-section">
-                <div class="card-header">
-                    <h2>Manual Controls</h2>
-                </div>
-                <p class="controls-desc">Override automated schedule manually below.</p>
-                <div class="button-group">
-                    <button id="btn-start" class="btn btn-primary">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <polygon points="5 3 19 12 5 21 5 3" />
-                        </svg>
-                        START IRRIGATION
-                    </button>
-                    <button id="btn-stop" class="btn btn-danger" disabled>
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
-                        </svg>
-                        STOP IRRIGATION
-                    </button>
-                </div>
-                <div class="control-feedback" id="control-feedback">
-                    System ready.
-                </div>
-
-                <!-- Plant Profile Section -->
-                <div class="plant-profile-section">
-                    <div class="plant-profile-header">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="plant-icon">
-                            <path d="M12 22V12" />
-                            <path d="M5 12C5 7 8 4 12 4s7 3 7 8" />
-                            <path d="M12 12C12 7 9 4 5 4" />
-                        </svg>
-                        <h3>Plant Profile</h3>
-                    </div>
-                    <p class="plant-desc">Set your plant to auto-adjust moisture threshold.</p>
-                    <div class="plant-input-row">
-                        <input
-                            type="text"
-                            id="plant-input"
-                            list="plant-list"
-                            placeholder="e.g. Tomato, Rose, Cactus"
-                            class="plant-input"
-                            autocomplete="off"
-                        />
-                        <datalist id="plant-list">
-                            <option value="Tomato">
-                            <option value="Cactus">
-                            <option value="Rose">
-                            <option value="Fern">
-                            <option value="Wheat">
-                            <option value="Lettuce">
-                            <option value="Mint">
-                            <option value="Aloe Vera">
-                            <option value="Orchid">
-                            <option value="Sunflower">
-                        </datalist>
-                        <button id="btn-set-plant" class="btn btn-plant">Set</button>
-                    </div>
-                    <div class="plant-info" id="plant-info" style="display:none;">
-                        <div class="plant-info-row">
-                            <span class="plant-info-label">🌿 Plant</span>
-                            <span class="plant-info-value" id="plant-name-display">--</span>
-                        </div>
-                        <div class="plant-info-row">
-                            <span class="plant-info-label">💧 Threshold</span>
-                            <span class="plant-info-value" id="plant-threshold-display">--%</span>
-                        </div>
-                        <div class="plant-info-row">
-                            <span class="plant-info-label">📊 Ideal Range</span>
-                            <span class="plant-info-value" id="plant-range-display">--</span>
-                        </div>
-                    </div>
-                    <div class="plant-feedback" id="plant-feedback"></div>
-                </div>
-            </section>
         </div>
-    </main>
+    </section>
+
+    <!-- Main Dashboard View (Initially Hidden) -->
+    <div id="dashboard-view" style="display:none;">
+        <main class="dashboard-container">
+            <!-- Dashboard Overview Cards -->
+            <section class="cards-grid">
+                <div class="card metric-card">
+                    <div class="card-header">
+                        <h3>Soil Moisture Level</h3>
+                        <svg class="card-icon blue-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M12 2v20" />
+                            <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
+                        </svg>
+                    </div>
+                    <div class="card-value">
+                        <span id="moisture-value">--</span><span class="unit">%</span>
+                    </div>
+                    <div class="card-footer">
+                        <div class="progress-bar-container">
+                            <div class="progress-bar" id="moisture-progress" style="width: 0%;"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card metric-card">
+                    <div class="card-header">
+                        <h3>Motor Status</h3>
+                        <svg class="card-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="10" />
+                            <path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20" />
+                            <path d="M2 12h20" />
+                        </svg>
+                    </div>
+                    <div class="card-value status-value">
+                        <span id="motor-status-text" class="status-off">OFF</span>
+                    </div>
+                    <div class="card-footer text-muted">
+                        Pump state indicator
+                    </div>
+                </div>
+
+                <div class="card metric-card">
+                    <div class="card-header">
+                        <h3>Watering Status</h3>
+                        <svg class="card-icon blue-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z" />
+                        </svg>
+                    </div>
+                    <div class="card-value status-value">
+                        <span id="watering-status-text" class="status-inactive">Inactive</span>
+                    </div>
+                    <div class="card-footer text-muted">
+                        Irrigation activity
+                    </div>
+                </div>
+            </section>
+
+            <!-- Chart and Controls Section -->
+            <div class="main-content-grid">
+                <section class="card chart-section">
+                    <div class="card-header">
+                        <h2>Real-time Soil Moisture vs Time</h2>
+                        <span class="last-updated">Last update: <span id="timestamp">--:--:--</span></span>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="moistureChart"></canvas>
+                    </div>
+                </section>
+
+                <section class="card controls-section">
+                    <div class="card-header">
+                        <h2>Manual Controls</h2>
+                    </div>
+                    <p class="controls-desc">Override automated schedule manually below.</p>
+                    <div class="button-group">
+                        <button id="btn-start" class="btn btn-primary">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <polygon points="5 3 19 12 5 21 5 3" />
+                            </svg>
+                            START IRRIGATION
+                        </button>
+                        <button id="btn-stop" class="btn btn-danger" disabled>
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
+                            </svg>
+                            STOP IRRIGATION
+                        </button>
+                    </div>
+                    <div class="control-feedback" id="control-feedback">
+                        System ready.
+                    </div>
+
+                    <!-- Plant Profile Section (Minimized in Dashboard) -->
+                    <div class="plant-profile-section dashboard-plant-profile">
+                        <div class="plant-profile-header">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="plant-icon">
+                                <path d="M12 22V12" />
+                                <path d="M5 12C5 7 8 4 12 4s7 3 7 8" />
+                                <path d="M12 12C12 7 9 4 5 4" />
+                            </svg>
+                            <h3>Active Profile</h3>
+                        </div>
+                        <div class="plant-info" id="plant-info">
+                            <div class="plant-info-row">
+                                <span class="plant-info-label">🌿 Plant</span>
+                                <span class="plant-info-value" id="plant-name-display">--</span>
+                            </div>
+                            <div class="plant-info-row">
+                                <span class="plant-info-label">💧 Range</span>
+                                <span class="plant-info-value" id="plant-range-display">--</span>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
 
     <footer class="main-footer">
         <div class="footer-creator">Created by <a href="https://my-portfolio-yjfu.vercel.app/" target="_blank"><span class="creator-blinker"></span>Yash Sunder Bawari</a></div>

@@ -158,7 +158,7 @@ function listenToFirebase() {
         updateUI();
     });
 
-    // PERSISTENCE: Check if a plant is already active in Firebase
+    // PERSISTENCE: Sync saved plant info if it exists
     const plantRef = ref(db, "irrigation/plant");
     onValue(plantRef, (snapshot) => {
         const savedPlant = snapshot.val();
@@ -169,13 +169,11 @@ function listenToFirebase() {
                 plantNameDisplay.textContent = plant.display;
                 plantRangeDisplay.textContent = plant.range;
                 
-                // If we are currently on the selection screen, jump to dashboard
-                if (selectionView.style.display !== 'none' && !selectionView.classList.contains('hidden')) {
-                    showDashboard();
-                }
+                // Note: We no longer auto-jump to dashboard on load.
+                // The selection screen stays visible until the user clicks Enter.
             }
         }
-    }, { onlyOnce: true }); // Only skip once on load
+    });
 }
 
 

@@ -174,8 +174,8 @@ function listenToFirebase() {
                 if (plantImgDisplay) {
                     const imgName = key.replace(" ", "");
                     // Check if it's one of the 6 we generated
-                    const hasReadyImg = ["tomato", "cactus", "rose", "fern", "wheat", "lettuce"].includes(key);
-                    plantImgDisplay.src = hasReadyImg ? `image/plants/${imgName}.png` : `image/logo.png`;
+                    const hasReadyImg = ["tomato", "cactus", "rose", "fern", "wheat", "lettuce", "mint", "aloe vera", "orchid", "sunflower"].includes(key);
+                    plantImgDisplay.src = hasReadyImg ? `image/${imgName}.png` : `image/logo.png`;
                 }
             }
         }

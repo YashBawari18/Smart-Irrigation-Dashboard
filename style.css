@@ -908,12 +908,6 @@ body {
     transform: scale(1.1);
 }
 
-.placeholder-img {
-    opacity: 0.3;
-    width: 60% !important;
-    height: auto !important;
-    object-fit: contain !important;
-}
 
 .plant-card span {
     font-weight: 700;

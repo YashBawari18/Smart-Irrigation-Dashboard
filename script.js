@@ -60,6 +60,7 @@ const selectionView       = document.getElementById('selection-view');
 const dashboardView       = document.getElementById('dashboard-view');
 const plantCards          = document.querySelectorAll('.plant-card');
 const btnEnterDashboard   = document.getElementById('btn-enter-dashboard');
+const preloader           = document.getElementById('preloader');
 const btnChangePlant      = document.getElementById('btn-change-plant');
 
 // Dashboard Info Display
@@ -114,13 +115,24 @@ function setupViewLogic() {
 }
 
 function showDashboard() {
+    // 1. Hide Selection & Show Preloader
     selectionView.classList.add('hidden');
+    
     setTimeout(() => {
         selectionView.style.display = 'none';
-        dashboardView.style.display = 'block';
-        btnChangePlant.style.display = 'block';
-        // Trigger resize for chart
-        if (chartInstance) chartInstance.resize();
+        preloader.classList.remove('hidden');
+        
+        // 2. Wait 2 seconds then show Dashboard
+        setTimeout(() => {
+            preloader.classList.add('hidden');
+            dashboardView.style.display = 'block';
+            btnChangePlant.style.display = 'block';
+            
+            // Trigger resize for chart
+            if (chartInstance) {
+                setTimeout(() => chartInstance.resize(), 50);
+            }
+        }, 2000);
     }, 500);
 }
 

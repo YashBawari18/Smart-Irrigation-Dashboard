@@ -20,16 +20,16 @@ const db = getDatabase(app);
 // -------- Plant Threshold Data --------
 // threshold = auto-pump triggers when moisture drops below this %
 const plantThresholds = {
-    "tomato":     { threshold: 60, stopAt: 80, range: "60–80%",  display: "Tomato"     },
-    "cactus":     { threshold: 10, stopAt: 20, range: "10–20%",  display: "Cactus"     },
-    "rose":       { threshold: 50, stopAt: 70, range: "50–70%",  display: "Rose"       },
-    "fern":       { threshold: 70, stopAt: 90, range: "70–90%",  display: "Fern"       },
-    "wheat":      { threshold: 40, stopAt: 60, range: "40–60%",  display: "Wheat"      },
-    "lettuce":    { threshold: 65, stopAt: 80, range: "65–80%",  display: "Lettuce"    },
-    "mint":       { threshold: 55, stopAt: 75, range: "55–75%",  display: "Mint"       },
-    "aloe vera":  { threshold: 15, stopAt: 30, range: "15–30%",  display: "Aloe Vera"  },
-    "orchid":     { threshold: 45, stopAt: 65, range: "45–65%",  display: "Orchid"     },
-    "sunflower":  { threshold: 35, stopAt: 55, range: "35–55%",  display: "Sunflower"  }
+    "wheat":     { threshold: 40, stopAt: 60, range: "40–60%",  display: "Wheat"     },
+    "rice":      { threshold: 80, stopAt: 100, range: "80–100%", display: "Rice"      },
+    "maize":     { threshold: 50, stopAt: 70, range: "50–70%",  display: "Maize"     },
+    "cotton":    { threshold: 25, stopAt: 45, range: "25–45%",  display: "Cotton"    },
+    "sugarcane": { threshold: 70, stopAt: 90, range: "70–90%",  display: "Sugarcane" },
+    "onion":     { threshold: 55, stopAt: 75, range: "55–75%",  display: "Onion"     },
+    "rose":      { threshold: 50, stopAt: 70, range: "50–70%",  display: "Rose"      },
+    "grapes":    { threshold: 60, stopAt: 80, range: "60–80%",  display: "Grapes"    },
+    "sunflower": { threshold: 35, stopAt: 55, range: "35–55%",  display: "Sunflower" },
+    "tomato":    { threshold: 60, stopAt: 80, range: "60–80%",  display: "Tomato"    }
 };
 
 
@@ -184,9 +184,11 @@ function listenToFirebase() {
                 
                 // Update Image in dashboard profile
                 if (plantImgDisplay) {
-                    const imgName = key.replace(" ", "");
-                    // Check if it's one of the 6 we generated
-                    const hasReadyImg = ["tomato", "cactus", "rose", "fern", "wheat", "lettuce", "mint", "aloe vera", "orchid", "sunflower"].includes(key);
+                    let imgName = key.replace(" ", "");
+                    if (key === "maize") {
+                        imgName = "maze"; // handle typo in image name
+                    }
+                    const hasReadyImg = ["wheat", "rice", "maize", "cotton", "sugarcane", "onion", "rose", "grapes", "sunflower", "tomato"].includes(key);
                     plantImgDisplay.src = hasReadyImg ? `image/${imgName}.png` : `image/logo.png`;
                 }
             }

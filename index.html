@@ -12,7 +12,7 @@
     <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <!-- Custom CSS -->
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style.css?v=2">
 </head>
 
 <body>
@@ -45,17 +45,41 @@
             <div class="plant-grid" id="plant-selection-grid">
                 <!-- Plants will be injected here via JS for better management, 
                      but we'll define the structure -->
-                <div class="plant-card" data-plant="tomato">
+                <div class="plant-card" data-plant="wheat">
                     <div class="plant-card-img">
-                        <img src="image/tomato.png" alt="Tomato">
+                        <img src="image/wheat.png" alt="Wheat">
                     </div>
-                    <span>Tomato</span>
+                    <span>Wheat</span>
                 </div>
-                <div class="plant-card" data-plant="cactus">
+                <div class="plant-card" data-plant="rice">
                     <div class="plant-card-img">
-                        <img src="image/cactus.png" alt="Cactus">
+                        <img src="image/rice.png" alt="Rice">
                     </div>
-                    <span>Cactus</span>
+                    <span>Rice</span>
+                </div>
+                <div class="plant-card" data-plant="maize">
+                    <div class="plant-card-img">
+                        <img src="image/maze.png" alt="Maize">
+                    </div>
+                    <span>Maize</span>
+                </div>
+                <div class="plant-card" data-plant="cotton">
+                    <div class="plant-card-img">
+                        <img src="image/cotton.png" alt="Cotton">
+                    </div>
+                    <span>Cotton</span>
+                </div>
+                <div class="plant-card" data-plant="sugarcane">
+                    <div class="plant-card-img">
+                        <img src="image/sugarcane.png" alt="Sugarcane">
+                    </div>
+                    <span>Sugarcane</span>
+                </div>
+                <div class="plant-card" data-plant="onion">
+                    <div class="plant-card-img">
+                        <img src="image/onion.png" alt="Onion">
+                    </div>
+                    <span>Onion</span>
                 </div>
                 <div class="plant-card" data-plant="rose">
                     <div class="plant-card-img">
@@ -63,47 +87,23 @@
                     </div>
                     <span>Rose</span>
                 </div>
-                <div class="plant-card" data-plant="fern">
+                <div class="plant-card" data-plant="grapes">
                     <div class="plant-card-img">
-                        <img src="image/fern.png" alt="Fern">
+                        <img src="image/grapes.png" alt="Grapes">
                     </div>
-                    <span>Fern</span>
-                </div>
-                <div class="plant-card" data-plant="wheat">
-                    <div class="plant-card-img">
-                        <img src="image/wheat.png" alt="Wheat">
-                    </div>
-                    <span>Wheat</span>
-                </div>
-                <div class="plant-card" data-plant="lettuce">
-                    <div class="plant-card-img">
-                        <img src="image/lettuce.png" alt="Lettuce">
-                    </div>
-                    <span>Lettuce</span>
-                </div>
-                <div class="plant-card" data-plant="mint">
-                    <div class="plant-card-img">
-                        <img src="image/mint.png" alt="Mint">
-                    </div>
-                    <span>Mint</span>
-                </div>
-                <div class="plant-card" data-plant="aloe vera">
-                    <div class="plant-card-img">
-                        <img src="image/aloevera.png" alt="Aloe Vera">
-                    </div>
-                    <span>Aloe Vera</span>
-                </div>
-                <div class="plant-card" data-plant="orchid">
-                    <div class="plant-card-img">
-                        <img src="image/orchid.png" alt="Orchid">
-                    </div>
-                    <span>Orchid</span>
+                    <span>Grapes</span>
                 </div>
                 <div class="plant-card" data-plant="sunflower">
                     <div class="plant-card-img">
                         <img src="image/sunflower.png" alt="Sunflower">
                     </div>
                     <span>Sunflower</span>
+                </div>
+                <div class="plant-card" data-plant="tomato">
+                    <div class="plant-card-img">
+                        <img src="image/tomato.png" alt="Tomato">
+                    </div>
+                    <span>Tomato</span>
                 </div>
             </div>
 
@@ -254,8 +254,6 @@
     </div>
 
     <footer class="main-footer">
-        <div class="footer-creator">Created by <a href="https://my-portfolio-yjfu.vercel.app/" target="_blank"><span
-                    class="creator-blinker"></span>Yash Sunder Bawari</a></div>
         <p style="margin-top: 0.5rem; color: var(--text-muted); font-size: 0.8rem;">
             &copy; 2026 Smart Irrigation Monitoring System. Crafted for a greener planet.
         </p>

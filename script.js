@@ -132,6 +132,9 @@ function showDashboard() {
             if (chartInstance) {
                 setTimeout(() => chartInstance.resize(), 50);
             }
+
+            // Init weather widget
+            setTimeout(() => initWeather(), 500);
         }, 2000);
     }, 500);
 }
@@ -209,6 +212,7 @@ btnStop.addEventListener('click', () => {
 
 // -------- UI Updates --------
 function updateUI() {
+    const _t = window.i18n ? window.i18n.t : (k) => k;
 
     moistureValueEl.textContent = currentMoisture;
     moistureProgressEl.style.width = currentMoisture + "%";
@@ -223,28 +227,28 @@ function updateUI() {
     }
 
     if (isMotorOn) {
-        motorStatusTextEl.textContent    = "ON";
+        motorStatusTextEl.textContent    = _t('motor_on');
         motorStatusTextEl.className      = "status-on";
-        wateringStatusTextEl.textContent = "Active";
+        wateringStatusTextEl.textContent = _t('watering_active');
         wateringStatusTextEl.className   = "status-active";
         btnStart.disabled  = true;
         btnStop.disabled   = false;
-        controlFeedback.textContent = "Irrigation Running";
+        controlFeedback.textContent = _t('control_running');
     } else {
-        motorStatusTextEl.textContent    = "OFF";
+        motorStatusTextEl.textContent    = _t('motor_off');
         motorStatusTextEl.className      = "status-off";
-        wateringStatusTextEl.textContent = "Inactive";
+        wateringStatusTextEl.textContent = _t('watering_inactive');
         wateringStatusTextEl.className   = "status-inactive";
         btnStart.disabled  = false;
         btnStop.disabled   = true;
-        controlFeedback.textContent = "System Ready";
+        controlFeedback.textContent = _t('control_ready');
     }
 }
 
 
 // -------- Chart --------
 function initChart() {
-
+    const _t = window.i18n ? window.i18n.t : (k) => k;
     const ctx = document.getElementById("moistureChart").getContext("2d");
 
     chartInstance = new Chart(ctx, {
@@ -252,7 +256,7 @@ function initChart() {
         data: {
             labels: [],
             datasets: [{
-                label: "Soil Moisture %",
+                label: _t('chart_label'),
                 data: [],
                 borderColor: "#4caf50",
                 backgroundColor: "rgba(76,175,80,0.1)",
@@ -292,4 +296,255 @@ function updateTimestamp() {
     const time = new Date().toLocaleTimeString();
     const timestampEl = document.getElementById('timestamp');
     if (timestampEl) timestampEl.textContent = time;
+}
+
+
+// -------- Weather Widget --------
+const WEATHER_API_KEY = "a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4"; // Free tier key placeholder
+const WEATHER_REFRESH_MS = 10 * 60 * 1000; // Refresh every 10 minutes
+
+// Use a free, no-key-required API as primary (Open-Meteo)
+async function fetchWeatherByCoords(lat, lon) {
+    try {
+        // Open-Meteo API — free, no API key needed
+        const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,relative_humidity_2m,apparent_temperature,weather_code,wind_speed_10m,rain&hourly=rain&forecast_days=1&timezone=auto`;
+        const resp = await fetch(url);
+        if (!resp.ok) throw new Error("Weather API error");
+        const data = await resp.json();
+
+        // Reverse geocode for city name
+        let cityName = "Your Location";
+        try {
+            const geoResp = await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json&zoom=10`);
+            const geoData = await geoResp.json();
+            cityName = geoData.address?.city || geoData.address?.town || geoData.address?.village || geoData.address?.county || "Your Location";
+        } catch (e) {
+            console.log("Geocode fallback:", e);
+        }
+
+        const current = data.current;
+        const weatherCode = current.weather_code;
+
+        // Map WMO weather codes to conditions
+        const condition = getConditionFromWMO(weatherCode);
+
+        return {
+            temp: Math.round(current.temperature_2m),
+            feelsLike: Math.round(current.apparent_temperature),
+            humidity: current.relative_humidity_2m,
+            windSpeed: Math.round(current.wind_speed_10m),
+            rain: current.rain || 0,
+            condition: condition.text,
+            icon: condition.icon,
+            city: cityName
+        };
+
+    } catch (error) {
+        console.error("Weather fetch error:", error);
+        return null;
+    }
+}
+
+function getConditionFromWMO(code) {
+    const _t = window.i18n ? window.i18n.t : (k) => k;
+    // WMO Weather interpretation codes
+    const map = {
+        0: { text: _t('cond_clear'), icon: "sun" },
+        1: { text: _t('cond_mainly_clear'), icon: "partly-cloudy" },
+        2: { text: _t('cond_partly_cloudy'), icon: "partly-cloudy" },
+        3: { text: _t('cond_overcast'), icon: "cloud" },
+        45: { text: _t('cond_foggy'), icon: "mist" },
+        48: { text: _t('cond_rime_fog'), icon: "mist" },
+        51: { text: _t('cond_light_drizzle'), icon: "rain" },
+        53: { text: _t('cond_mod_drizzle'), icon: "rain" },
+        55: { text: _t('cond_dense_drizzle'), icon: "rain" },
+        56: { text: _t('cond_freezing_drizzle'), icon: "rain" },
+        57: { text: _t('cond_dense_freezing_drizzle'), icon: "rain" },
+        61: { text: _t('cond_slight_rain'), icon: "rain" },
+        63: { text: _t('cond_mod_rain'), icon: "rain" },
+        65: { text: _t('cond_heavy_rain'), icon: "rain" },
+        66: { text: _t('cond_freezing_rain'), icon: "rain" },
+        67: { text: _t('cond_heavy_freezing_rain'), icon: "rain" },
+        71: { text: _t('cond_slight_snow'), icon: "snow" },
+        73: { text: _t('cond_mod_snow'), icon: "snow" },
+        75: { text: _t('cond_heavy_snow'), icon: "snow" },
+        77: { text: _t('cond_snow_grains'), icon: "snow" },
+        80: { text: _t('cond_slight_rain_shower'), icon: "rain" },
+        81: { text: _t('cond_mod_rain_shower'), icon: "rain" },
+        82: { text: _t('cond_violent_rain_shower'), icon: "rain" },
+        85: { text: _t('cond_slight_snow_shower'), icon: "snow" },
+        86: { text: _t('cond_heavy_snow_shower'), icon: "snow" },
+        95: { text: _t('cond_thunderstorm'), icon: "thunder" },
+        96: { text: _t('cond_thunder_hail'), icon: "thunder" },
+        99: { text: _t('cond_thunder_heavy_hail'), icon: "thunder" }
+    };
+    return map[code] || { text: "Unknown", icon: "cloud" };
+}
+
+function getAnimatedWeatherIcon(iconType) {
+    switch (iconType) {
+        case "sun":
+            return `<div class="weather-animated-icon"><div class="weather-sun"></div></div>`;
+        case "cloud":
+            return `<div class="weather-animated-icon"><div class="weather-cloud"></div></div>`;
+        case "rain":
+            return `<div class="weather-animated-icon">
+                <div class="weather-rain-drops">
+                    <div class="cloud-part"></div>
+                    <div class="rain-drop"></div>
+                    <div class="rain-drop"></div>
+                    <div class="rain-drop"></div>
+                </div>
+            </div>`;
+        case "thunder":
+            return `<div class="weather-animated-icon">
+                <div class="weather-thunder">
+                    <div class="cloud-part"></div>
+                    <div class="bolt"></div>
+                </div>
+            </div>`;
+        case "snow":
+            return `<div class="weather-animated-icon">
+                <div class="weather-snow-icon">
+                    <div class="cloud-part"></div>
+                    <div class="snow-flake"></div>
+                    <div class="snow-flake"></div>
+                    <div class="snow-flake"></div>
+                </div>
+            </div>`;
+        case "mist":
+            return `<div class="weather-animated-icon">
+                <div class="weather-mist">
+                    <div class="mist-line"></div>
+                    <div class="mist-line"></div>
+                    <div class="mist-line"></div>
+                    <div class="mist-line"></div>
+                </div>
+            </div>`;
+        case "partly-cloudy":
+            return `<div class="weather-animated-icon">
+                <div class="weather-partly-cloudy">
+                    <div class="mini-sun"></div>
+                    <div class="mini-cloud"></div>
+                </div>
+            </div>`;
+        default:
+            return `<div class="weather-animated-icon"><div class="weather-cloud"></div></div>`;
+    }
+}
+
+function generateAdvisory(weather) {
+    const _t = window.i18n ? window.i18n.t : (k) => k;
+    const advisoryEl = document.getElementById('weather-advisory');
+    const advisoryTextEl = document.getElementById('advisory-text');
+    const advisoryBadgeEl = document.getElementById('advisory-badge');
+
+    if (!weather || !advisoryEl) return;
+
+    let text = "";
+    let type = "safe";
+    let badge = "";
+
+    const isRaining = weather.rain > 0 || ["rain", "thunder"].includes(weather.icon);
+    const isHeavyRain = weather.rain > 5 || weather.icon === "thunder";
+    const isHot = weather.temp > 38;
+    const isCold = weather.temp < 5;
+    const isHighHumidity = weather.humidity > 80;
+    const isLowHumidity = weather.humidity < 30;
+    const isWindy = weather.windSpeed > 30;
+
+    if (isHeavyRain) {
+        text = _t('adv_heavy_rain', { rain: weather.rain });
+        type = "rain";
+        badge = _t('badge_paused');
+    } else if (isRaining) {
+        text = _t('adv_rain');
+        type = "rain";
+        badge = _t('badge_reduce');
+    } else if (isHot && isLowHumidity) {
+        text = _t('adv_extreme_heat', { temp: weather.temp });
+        type = "danger";
+        badge = _t('badge_critical');
+    } else if (isHot) {
+        text = _t('adv_hot', { temp: weather.temp });
+        type = "caution";
+        badge = _t('badge_monitor');
+    } else if (isCold) {
+        text = _t('adv_cold', { temp: weather.temp });
+        type = "caution";
+        badge = _t('badge_caution');
+    } else if (isWindy) {
+        text = _t('adv_windy', { wind: weather.windSpeed });
+        type = "caution";
+        badge = _t('badge_windy');
+    } else if (isHighHumidity) {
+        text = _t('adv_humid', { humidity: weather.humidity });
+        type = "safe";
+        badge = _t('badge_reduce');
+    } else {
+        text = _t('adv_optimal');
+        type = "safe";
+        badge = _t('badge_optimal');
+    }
+
+    advisoryTextEl.textContent = text;
+
+    // Reset classes
+    advisoryEl.className = "weather-advisory card advisory-" + type;
+    advisoryBadgeEl.className = "advisory-badge badge-" + type;
+    advisoryBadgeEl.querySelector("span").textContent = badge;
+}
+
+function renderWeather(weather) {
+    if (!weather) return;
+
+    document.getElementById('weather-temp-value').textContent = weather.temp;
+    document.getElementById('weather-condition').textContent = weather.condition;
+    document.getElementById('weather-city').textContent = weather.city;
+    document.getElementById('weather-humidity').textContent = weather.humidity + "%";
+    document.getElementById('weather-wind').textContent = weather.windSpeed + " km/h";
+    document.getElementById('weather-rain').textContent = weather.rain.toFixed(1) + " mm";
+    document.getElementById('weather-feels').textContent = weather.feelsLike + "°C";
+
+    // Set animated icon
+    const iconWrapper = document.getElementById('weather-icon-wrapper');
+    if (iconWrapper) {
+        iconWrapper.innerHTML = getAnimatedWeatherIcon(weather.icon);
+    }
+
+    // Generate smart advisory
+    generateAdvisory(weather);
+}
+
+async function initWeather() {
+    if (!navigator.geolocation) {
+        document.getElementById('weather-condition').textContent = "Geolocation not supported";
+        return;
+    }
+
+    navigator.geolocation.getCurrentPosition(
+        async (position) => {
+            const { latitude, longitude } = position.coords;
+            const weather = await fetchWeatherByCoords(latitude, longitude);
+            if (weather) {
+                renderWeather(weather);
+                // Auto-refresh
+                setInterval(async () => {
+                    const updated = await fetchWeatherByCoords(latitude, longitude);
+                    if (updated) renderWeather(updated);
+                }, WEATHER_REFRESH_MS);
+            }
+        },
+        (error) => {
+            console.warn("Geolocation denied, using fallback (Pune, India)");
+            // Fallback to Pune, India coordinates
+            fetchWeatherByCoords(18.5204, 73.8567).then(weather => {
+                if (weather) {
+                    weather.city = "Pune, India";
+                    renderWeather(weather);
+                }
+            });
+        },
+        { enableHighAccuracy: false, timeout: 10000 }
+    );
 }

@@ -10,7 +10,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet">
     <!-- Custom CSS -->
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style.css?v=3">
 </head>
 
 <body>
@@ -29,20 +29,20 @@
                 <h1>Acu<span>Root</span></h1>
             </div>
             <nav class="nav-menu">
-                <a href="index.html" class="nav-link">Dashboard</a>
-                <a href="team.html" class="nav-link active">Team</a>
+                <a href="index.html" class="nav-link" data-i18n="nav_dashboard">Dashboard</a>
+                <a href="team.html" class="nav-link active" data-i18n="nav_team">Team</a>
             </nav>
             <div class="system-status">
                 <div class="status-indicator"></div>
-                <span id="connection-status">System Connected</span>
+                <span id="connection-status" data-i18n="system_connected">System Connected</span>
             </div>
         </div>
     </header>
 
     <main class="team-page-wrapper">
         <div class="team-container">
-            <h2 class="section-title">Meet Our Team</h2>
-            <p class="section-subtitle">A group of passionate developers building the future of sustainable farming.</p>
+            <h2 class="section-title" data-i18n="team_title">Meet Our Team</h2>
+            <p class="section-subtitle" data-i18n="team_subtitle">A group of passionate developers building the future of sustainable farming.</p>
 
             <div class="team-grid">
                 <!-- Team Member 1 -->
@@ -52,7 +52,7 @@
                     </div>
                     <div class="member-info">
                         <h3 class="member-name">Siddhi</h3>
-                        <p class="member-role">Developer</p>
+                        <p class="member-role" data-i18n="role_developer">Developer</p>
                         <div class="social-links">
                             <a href="https://www.linkedin.com/in/siddhi-khodade-83a005314?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app" class="social-icon" target="_blank">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
@@ -76,7 +76,7 @@
                     </div>
                     <div class="member-info">
                         <h3 class="member-name">Snimal</h3>
-                        <p class="member-role">Developer</p>
+                        <p class="member-role" data-i18n="role_developer">Developer</p>
                         <div class="social-links">
                             <a href="https://www.linkedin.com/in/snimal-mhaske-71b075276?utm_source=share_via&utm_content=profile&utm_medium=member_android" class="social-icon" target="_blank">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
@@ -100,7 +100,7 @@
                     </div>
                     <div class="member-info">
                         <h3 class="member-name">Tanvi</h3>
-                        <p class="member-role">Developer</p>
+                        <p class="member-role" data-i18n="role_developer">Developer</p>
                         <div class="social-links">
                             <a href="https://www.linkedin.com/in/tanvi-baviskar-30ab41375?utm_source=share_via&utm_content=profile&utm_medium=member_android" class="social-icon" target="_blank">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
@@ -121,10 +121,13 @@
     </main>
 
     <footer class="main-footer">
-        <p style="margin-top: 0.5rem; color: var(--text-muted); font-size: 0.8rem;">
+        <p style="margin-top: 0.5rem; color: var(--text-muted); font-size: 0.8rem;" data-i18n="footer_text">
             &copy; 2026 Smart Irrigation Monitoring System. Crafted for a greener planet.
         </p>
     </footer>
+
+    <!-- i18n (must load BEFORE other scripts) -->
+    <script src="i18n.js"></script>
 
     <script>
         // Custom Cursor Logic

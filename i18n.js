@@ -440,24 +440,24 @@ function setLanguage(lang) {
 
 // -------- Language Switcher UI Injection --------
 function injectLanguageSwitcher() {
-    const headerContent = document.querySelector('.header-content');
-    if (!headerContent || document.querySelector('.lang-switcher')) return;
+    // Target only the plant selection view header
+    const selectionHeader = document.querySelector('.selection-header');
+    if (!selectionHeader || document.querySelector('.lang-switcher')) return;
 
     const switcher = document.createElement('div');
     switcher.className = 'lang-switcher';
+    switcher.style.display = 'inline-flex';
+    switcher.style.justifyContent = 'center';
+    switcher.style.marginBottom = '1.2rem';
+    
     switcher.innerHTML = `
         <button class="lang-btn ${currentLang === 'en' ? 'active' : ''}" data-lang="en" title="English">EN</button>
         <button class="lang-btn ${currentLang === 'hi' ? 'active' : ''}" data-lang="hi" title="हिन्दी">हि</button>
         <button class="lang-btn ${currentLang === 'mr' ? 'active' : ''}" data-lang="mr" title="मराठी">म</button>
     `;
 
-    // Insert before system-status
-    const systemStatus = headerContent.querySelector('.system-status');
-    if (systemStatus) {
-        headerContent.insertBefore(switcher, systemStatus);
-    } else {
-        headerContent.appendChild(switcher);
-    }
+    // Insert at the beginning of the selection header
+    selectionHeader.insertBefore(switcher, selectionHeader.firstChild);
 
     // Add click listeners
     switcher.querySelectorAll('.lang-btn').forEach(btn => {

@@ -25,6 +25,7 @@
             <nav class="nav-menu">
                 <a href="index.html" class="nav-link active" data-i18n="nav_dashboard">Dashboard</a>
                 <a href="team.html" class="nav-link" data-i18n="nav_team">Team</a>
+                <button id="btn-open-doctor" class="nav-btn-link" style="display:none;" data-i18n="plant_doctor_btn">🌿 Plant Doctor</button>
                 <button id="btn-change-plant" class="nav-btn-link" style="display:none;" data-i18n="nav_change_plant">Change Plant</button>
             </nav>
             <div class="system-status">
@@ -265,6 +266,231 @@
                 </div>
             </section>
 
+            <!-- Soil Quality & NPK Health Section -->
+            <section class="soil-quality-section card" id="soil-quality-section">
+                <div class="soil-section-header">
+                    <div class="soil-header-left">
+                        <div class="soil-icon-badge">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                                <path d="m9 12 2 2 4-4"/>
+                            </svg>
+                        </div>
+                        <div>
+                            <div class="soil-title-row">
+                                <h2 data-i18n="soil_quality_title">Soil Quality & Agronomic Health</h2>
+                                <span class="soil-overall-badge status-normal" id="soil-health-badge">🟢 96% Optimal</span>
+                            </div>
+                            <p class="soil-subtitle" data-i18n="soil_quality_subtitle">Real-time rootzone telemetry, NPK nutrient distribution & chemical balance</p>
+                        </div>
+                    </div>
+                    <div class="soil-header-right">
+                        <span class="soil-sync-time"><span data-i18n="soil_synced">Synced:</span> <span id="soil-timestamp">Just now</span></span>
+                    </div>
+                </div>
+
+                <div class="soil-grid">
+                    <!-- 1. Soil Moisture -->
+                    <div class="soil-card" id="soil-card-moisture">
+                        <div class="soil-card-top">
+                            <div class="soil-card-label">
+                                <span class="soil-metric-icon">💧</span>
+                                <span class="soil-metric-name" data-i18n="soil_moisture">Soil Moisture</span>
+                            </div>
+                            <span class="soil-status-pill status-normal" id="soil-status-moisture">🟢 Normal</span>
+                        </div>
+                        <div class="soil-card-body">
+                            <div class="soil-card-value">
+                                <span id="sq-moisture-val">42</span><span class="soil-unit">%</span>
+                            </div>
+                            <div class="soil-range-bar">
+                                <div class="soil-bar-track">
+                                    <div class="soil-bar-fill" id="sq-moisture-bar" style="width: 42%;"></div>
+                                    <div class="soil-target-marker" style="left: 40%; width: 25%;" title="Target: 40-65%"></div>
+                                </div>
+                                <div class="soil-range-legend">
+                                    <span>20%</span>
+                                    <span class="soil-ideal-range">Optimal: 40–65%</span>
+                                    <span>100%</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 2. Soil Temperature -->
+                    <div class="soil-card" id="soil-card-temp">
+                        <div class="soil-card-top">
+                            <div class="soil-card-label">
+                                <span class="soil-metric-icon">🌡️</span>
+                                <span class="soil-metric-name" data-i18n="soil_temp">Temperature</span>
+                            </div>
+                            <span class="soil-status-pill status-normal" id="soil-status-temp">🟢 Normal</span>
+                        </div>
+                        <div class="soil-card-body">
+                            <div class="soil-card-value">
+                                <span id="sq-temp-val">28</span><span class="soil-unit">°C</span>
+                            </div>
+                            <div class="soil-range-bar">
+                                <div class="soil-bar-track">
+                                    <div class="soil-bar-fill" id="sq-temp-bar" style="width: 56%;"></div>
+                                    <div class="soil-target-marker" style="left: 36%; width: 32%;" title="Target: 20-32°C"></div>
+                                </div>
+                                <div class="soil-range-legend">
+                                    <span>10°C</span>
+                                    <span class="soil-ideal-range">Optimal: 20–32°C</span>
+                                    <span>45°C</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 3. pH -->
+                    <div class="soil-card" id="soil-card-ph">
+                        <div class="soil-card-top">
+                            <div class="soil-card-label">
+                                <span class="soil-metric-icon">🧪</span>
+                                <span class="soil-metric-name" data-i18n="soil_ph">pH Level</span>
+                            </div>
+                            <span class="soil-status-pill status-normal" id="soil-status-ph">🟢 Normal</span>
+                        </div>
+                        <div class="soil-card-body">
+                            <div class="soil-card-value">
+                                <span id="sq-ph-val">6.7</span><span class="soil-unit-sub" id="sq-ph-state">Neutral</span>
+                            </div>
+                            <div class="soil-range-bar">
+                                <div class="soil-bar-track ph-track">
+                                    <div class="soil-ph-pin" id="sq-ph-pin" style="left: 48%;"></div>
+                                </div>
+                                <div class="soil-range-legend">
+                                    <span class="ph-acid">&lt;6.0 Acid</span>
+                                    <span class="ph-neutral soil-ideal-range">6.0–7.5 Optimal</span>
+                                    <span class="ph-alkali">&gt;7.5 Alkali</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 4. Nitrogen (N) -->
+                    <div class="soil-card" id="soil-card-n">
+                        <div class="soil-card-top">
+                            <div class="soil-card-label">
+                                <span class="soil-metric-icon">🍃</span>
+                                <span class="soil-metric-name" data-i18n="soil_nitrogen">Nitrogen (N)</span>
+                            </div>
+                            <span class="soil-status-pill status-normal" id="soil-status-n">🟢 Normal</span>
+                        </div>
+                        <div class="soil-card-body">
+                            <div class="soil-card-value">
+                                <span id="sq-n-val">65</span><span class="soil-unit">mg/kg</span>
+                            </div>
+                            <div class="soil-range-bar">
+                                <div class="soil-bar-track">
+                                    <div class="soil-bar-fill" id="sq-n-bar" style="width: 54%;"></div>
+                                    <div class="soil-target-marker" style="left: 42%; width: 33%;" title="Target: 50-90 mg/kg"></div>
+                                </div>
+                                <div class="soil-range-legend">
+                                    <span>0 mg/kg</span>
+                                    <span class="soil-ideal-range">Target: 50–90 mg/kg</span>
+                                    <span>120</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 5. Phosphorus (P) -->
+                    <div class="soil-card" id="soil-card-p">
+                        <div class="soil-card-top">
+                            <div class="soil-card-label">
+                                <span class="soil-metric-icon">🌸</span>
+                                <span class="soil-metric-name" data-i18n="soil_phosphorus">Phosphorus (P)</span>
+                            </div>
+                            <span class="soil-status-pill status-normal" id="soil-status-p">🟢 Normal</span>
+                        </div>
+                        <div class="soil-card-body">
+                            <div class="soil-card-value">
+                                <span id="sq-p-val">32</span><span class="soil-unit">mg/kg</span>
+                            </div>
+                            <div class="soil-range-bar">
+                                <div class="soil-bar-track">
+                                    <div class="soil-bar-fill" id="sq-p-bar" style="width: 53%;"></div>
+                                    <div class="soil-target-marker" style="left: 33%; width: 50%;" title="Target: 20-50 mg/kg"></div>
+                                </div>
+                                <div class="soil-range-legend">
+                                    <span>0 mg/kg</span>
+                                    <span class="soil-ideal-range">Target: 20–50 mg/kg</span>
+                                    <span>60</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 6. Potassium (K) -->
+                    <div class="soil-card" id="soil-card-k">
+                        <div class="soil-card-top">
+                            <div class="soil-card-label">
+                                <span class="soil-metric-icon">🛡️</span>
+                                <span class="soil-metric-name" data-i18n="soil_potassium">Potassium (K)</span>
+                            </div>
+                            <span class="soil-status-pill status-normal" id="soil-status-k">🟢 Normal</span>
+                        </div>
+                        <div class="soil-card-body">
+                            <div class="soil-card-value">
+                                <span id="sq-k-val">180</span><span class="soil-unit">mg/kg</span>
+                            </div>
+                            <div class="soil-range-bar">
+                                <div class="soil-bar-track">
+                                    <div class="soil-bar-fill" id="sq-k-bar" style="width: 64%;"></div>
+                                    <div class="soil-target-marker" style="left: 43%; width: 36%;" title="Target: 120-220 mg/kg"></div>
+                                </div>
+                                <div class="soil-range-legend">
+                                    <span>0 mg/kg</span>
+                                    <span class="soil-ideal-range">Target: 120–220 mg/kg</span>
+                                    <span>280</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 7. Electrical Conductivity (EC) -->
+                    <div class="soil-card" id="soil-card-ec">
+                        <div class="soil-card-top">
+                            <div class="soil-card-label">
+                                <span class="soil-metric-icon">⚡</span>
+                                <span class="soil-metric-name" data-i18n="soil_ec">EC (Conductivity)</span>
+                            </div>
+                            <span class="soil-status-pill status-normal" id="soil-status-ec">🟢 Normal</span>
+                        </div>
+                        <div class="soil-card-body">
+                            <div class="soil-card-value">
+                                <span id="sq-ec-val">0.8</span><span class="soil-unit">mS/cm</span>
+                            </div>
+                            <div class="soil-range-bar">
+                                <div class="soil-bar-track">
+                                    <div class="soil-bar-fill" id="sq-ec-bar" style="width: 40%;"></div>
+                                    <div class="soil-target-marker" style="left: 25%; width: 50%;" title="Target: 0.5-1.5 mS/cm"></div>
+                                </div>
+                                <div class="soil-range-legend">
+                                    <span>0.0 mS/cm</span>
+                                    <span class="soil-ideal-range">Target: 0.5–1.5 mS/cm</span>
+                                    <span>2.0</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Soil Insight Footer -->
+                <div class="soil-insight-footer">
+                    <div class="soil-insight-icon">💡</div>
+                    <div class="soil-insight-text">
+                        <strong data-i18n="soil_recommendation_title">Agronomic Diagnosis:</strong>
+                        <span id="soil-insight-desc" data-i18n="soil_recommendation_text">
+                            NPK nutrient ratio (65:32:180) and pH (6.7) are in prime equilibrium. Root absorption efficiency is 96%. No chemical or organic amendments required at this time.
+                        </span>
+                    </div>
+                </div>
+            </section>
+
             <!-- Chart and Controls Section -->
             <div class="main-content-grid">
                 <section class="card chart-section">
@@ -324,6 +550,148 @@
                 </section>
             </div>
         </main>
+    </div>
+
+    <!-- Floating AI Plant Doctor Launcher -->
+    <div class="chatbot-launcher-container" id="chatbot-launcher-container">
+        <button class="chatbot-launcher-btn" id="chatbot-launcher" aria-label="Open AI Plant Doctor">
+            <div class="chatbot-launcher-pulse"></div>
+            <div class="chatbot-launcher-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M12 2a10 10 0 0 0-7.5 16.6A10 10 0 0 0 12 22a10 10 0 0 0 7.5-3.4A10 10 0 0 0 12 2Z"/>
+                    <path d="M12 6v6l4 2"/>
+                </svg>
+                <span class="bot-badge-icon">🌿</span>
+            </div>
+            <div class="chatbot-launcher-label">
+                <span class="launcher-main-text" data-i18n="chat_launcher_title">Plant Doctor AI</span>
+                <span class="launcher-sub-text" data-i18n="chat_launcher_subtitle">Upload Leaf & Diagnose</span>
+            </div>
+            <div class="chatbot-unread-dot"></div>
+        </button>
+    </div>
+
+    <!-- AI Plant Doctor Modal / Floating Dock -->
+    <div class="chatbot-modal" id="chatbot-modal" style="display: none;">
+        <div class="chatbot-window">
+            <!-- Chatbot Header -->
+            <div class="chatbot-header">
+                <div class="chatbot-header-info">
+                    <div class="chatbot-avatar">
+                        <img src="image/logo.png" alt="AcuBot">
+                        <div class="chatbot-status-dot"></div>
+                    </div>
+                    <div>
+                        <div class="chatbot-title-wrap">
+                            <h3 data-i18n="chat_title">AcuBot Plant Doctor</h3>
+                            <span class="chatbot-pill">AI Vision</span>
+                        </div>
+                        <p class="chatbot-status-desc" data-i18n="chat_subtitle">Crop Health Diagnostics & Treatment Advisor</p>
+                    </div>
+                </div>
+                <div class="chatbot-header-actions">
+                    <button class="chat-btn-icon" id="chat-btn-clear" title="Clear Chat">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
+                    </button>
+                    <button class="chat-btn-icon" id="chat-btn-close" title="Close">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Sample Leaf Test Bar (Quick Diagnostic 1-Click Demos) -->
+            <div class="chat-samples-bar">
+                <div class="samples-label" data-i18n="chat_samples_label">⚡ Quick Sample Leaves:</div>
+                <div class="samples-chips">
+                    <button class="sample-chip" data-sample="blight">
+                        <img src="image/sample_blight.jpg" alt="Tomato Blight">
+                        <span>🍅 Tomato Blight</span>
+                    </button>
+                    <button class="sample-chip" data-sample="chlorosis">
+                        <img src="image/sample_chlorosis.jpg" alt="Nitrogen Deficiency">
+                        <span>🍃 Low Nitrogen (Chlorosis)</span>
+                    </button>
+                    <button class="sample-chip" data-sample="healthy">
+                        <img src="image/sample_healthy.jpg" alt="Healthy Leaf">
+                        <span>✨ Healthy Crop</span>
+                    </button>
+                    <button class="sample-chip" data-sample="wilt">
+                        <span class="sample-emoji">🥀</span>
+                        <span>Drought Wilt</span>
+                    </button>
+                    <button class="sample-chip" data-sample="mildew">
+                        <span class="sample-emoji">🍇</span>
+                        <span>Powdery Mildew</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Chat Messages Container -->
+            <div class="chat-messages" id="chat-messages">
+                <!-- Initial Greeting -->
+                <div class="chat-msg msg-bot">
+                    <div class="msg-avatar">
+                        <img src="image/logo.png" alt="Bot">
+                    </div>
+                    <div class="msg-content">
+                        <p>👋 Hello! I am your <strong>AcuBot Plant Doctor</strong>.</p>
+                        <p>📸 <strong>Upload or drop a picture</strong> of your crop or leaf, and I will scan it to:</p>
+                        <ul>
+                            <li>Analyze health status & identify diseases or pests</li>
+                            <li>Detect chlorosis, nutrient deficiencies, or moisture stress</li>
+                            <li>Prescribe an actionable <strong>"How to make it best"</strong> recovery plan!</li>
+                        </ul>
+                        <p class="msg-hint">💡 Tip: Tap any sample leaf above to test instantly, or choose a photo from your device.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Upload Drag & Drop Preview (Collapsible) -->
+            <div class="chat-upload-preview" id="chat-upload-preview" style="display: none;">
+                <div class="preview-img-wrap">
+                    <img id="upload-preview-img" src="" alt="Uploaded Leaf">
+                    <button class="preview-remove-btn" id="preview-remove-btn" title="Remove image">&times;</button>
+                </div>
+                <div class="preview-info">
+                    <span class="preview-filename" id="preview-filename">leaf-photo.jpg</span>
+                    <span class="preview-status" data-i18n="chat_ready_analyze">Ready to analyze</span>
+                </div>
+                <button class="btn btn-primary btn-sm" id="btn-analyze-uploaded" data-i18n="chat_btn_diagnose">Diagnose Now</button>
+            </div>
+
+            <!-- Chat Input Form & Tools -->
+            <div class="chat-input-area">
+                <!-- Hidden File Input -->
+                <input type="file" id="leaf-file-input" accept="image/*" style="display: none;">
+                
+                <div class="chat-input-row">
+                    <button class="chat-action-btn" id="btn-upload-leaf" title="Upload Plant Photo">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+                            <circle cx="8.5" cy="8.5" r="1.5"/>
+                            <polyline points="21 15 16 10 5 21"/>
+                        </svg>
+                        <span class="upload-btn-text" data-i18n="chat_add_photo">Photo</span>
+                    </button>
+
+                    <textarea id="chat-text-input" class="chat-textarea" placeholder="Ask Plant Doctor or describe symptoms..." rows="1" data-i18n-placeholder="chat_placeholder"></textarea>
+
+                    <button class="chat-send-btn" id="chat-send-btn" title="Send Message">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="22" y1="2" x2="11" y2="13"/>
+                            <polygon points="22 2 15 22 11 13 2 9 22 2"/>
+                        </svg>
+                    </button>
+                </div>
+
+                <!-- Quick Suggestions -->
+                <div class="chat-quick-suggestions">
+                    <button class="quick-prompt-btn" data-prompt="How often should I water my crop?">💧 Watering schedule?</button>
+                    <button class="quick-prompt-btn" data-prompt="How do I cure leaf yellowing?">🍃 Fix yellow leaves</button>
+                    <button class="quick-prompt-btn" data-prompt="What organic fungicide can I use?">🛡️ Organic remedies</button>
+                </div>
+            </div>
+        </div>
     </div>
 
     <footer class="main-footer">
